@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using WebApi.Data;
+using WebApi.Data.Models;
 
 namespace WebApi.Controllers
 {
@@ -20,6 +22,18 @@ namespace WebApi.Controllers
         {
             var cats = await _db.Categories.ToListAsync();
             return Ok(cats);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(Category cat)
+        {
+            if (ModelState.IsValid)
+            {
+                await _db.Categories.AddAsync(cat);
+                await _db.SaveChangesAsync();
+                return Ok(cat);
+            }
+            return BadRequest();
         }
     }
 }
