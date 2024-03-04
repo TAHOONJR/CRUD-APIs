@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using WebApi.Data;
 using WebApi.Data.Models;
 
@@ -25,15 +24,39 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(Category cat)
+        public async Task<IActionResult> AddCategory(string Name, string Description)
         {
-            if (ModelState.IsValid)
+            Category c = new() { Name = Name, Description = Description };
+            await _db.Categories.AddAsync(c);
+            _db.SaveChanges();
+            return Ok(c);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(int Id, string Name, string Description)
+        {
+            var c = await _db.Categories.FindAsync(Id);
+            if (c == null)
             {
-                await _db.Categories.AddAsync(cat);
-                await _db.SaveChangesAsync();
-                return Ok(cat);
+                return NotFound($"category Id \"{Id}\" Not exist");
             }
-            return BadRequest();
+            c.Name = Name;
+            c.Description = Description;
+            _db.SaveChanges();
+            return Ok(c);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int Id)
+        {
+            var c = await _db.Categories.FindAsync(Id);
+            if (c == null)
+            {
+                return NotFound($"category Id \"{Id}\" Not exist");
+            }
+            _db.Categories.Remove(c);
+            _db.SaveChanges();
+            return Ok($"Category \"{Id}\" Deleted Successfully ");
         }
     }
 }
