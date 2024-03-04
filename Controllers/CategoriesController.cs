@@ -58,5 +58,25 @@ namespace WebApi.Controllers
             _db.SaveChanges();
             return Ok($"Category \"{Id}\" Deleted Successfully ");
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> PatchCategory(int Id, string Name, string Description)
+        {
+            var c = await _db.Categories.FindAsync(Id);
+            if (c == null)
+            {
+                return NotFound($"category Id \"{Id}\" Not exist");
+            }
+            if (Name != null)
+            {
+                c.Name = Name;
+            }
+            if (Description != null)
+            {
+                c.Description = Description;
+            }
+            _db.SaveChanges();
+            return Ok(c);
+        }
     }
 }
