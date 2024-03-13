@@ -23,6 +23,17 @@ namespace WebApi.Controllers
             return Ok(cats);
         }
 
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetOneCategory(int Id)
+        {
+            var c = await _db.Categories.FindAsync(Id);
+            if (c == null)
+            {
+                return NotFound($"category Id \"{Id}\" Not exist");
+            }
+            return Ok(c);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddCategory(string Name, string Description)
         {
@@ -59,7 +70,7 @@ namespace WebApi.Controllers
             return Ok($"Category \"{Id}\" Deleted Successfully ");
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> PatchCategory(int Id, string Name, string Description)
         {
             var c = await _db.Categories.FindAsync(Id);
@@ -78,5 +89,6 @@ namespace WebApi.Controllers
             _db.SaveChanges();
             return Ok(c);
         }
+
     }
 }

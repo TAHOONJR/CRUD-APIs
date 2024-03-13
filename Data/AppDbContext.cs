@@ -11,5 +11,7 @@ namespace WebApi.Data
         }
 
         public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Items> Items { get; set;}
     }
 }
